@@ -119,7 +119,7 @@ async def on_message(message):
     if message.author.id == 344659595970740226:
         random_number = random.randint(1,5)
         if random_number == 1:
-            await message.reply(random.choice(joe_words,delete_after=5.0))
+            await message.reply(random.choice(joe_words),delete_after=5.0)
         return
 
 client.run(os.getenv('BOT_TOKEN'))
