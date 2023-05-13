@@ -1,3 +1,6 @@
+# Most of this bot is a joke, like who actually has a 'swearlist'. I just wanna mess with my friends. The only reason I am making this is to try and learn python and learn how to interface with an API
+# The main goal for this bot would be to link with the Bungie API and do cool functions with it. 
+# I can guarantee this is clunky 
 import discord
 from discord.ext import commands
 import os
@@ -71,7 +74,7 @@ async def on_message(message):
 
     # Simple help command
     if message.content == '$help':
-        await message.channel.send("`There aren't a lot of commands right now, but here's what we got:\n$swear : Report a swear word you would like to add to the no-no list\n$delete : Delete a swear word from the swear list\n$list : List all of the swears in the swearlist!\n$shutdown : Turn off the discord bot (Only JT can run this)`")
+        await message.channel.send("`There aren't a lot of commands right now, but here's what we got:\n$uptime : See how long the bots been running!\n$time Get the current time!\n$swear : Report a swear word you would like to add to the no-no list\n$delete : Delete a swear word from the swear list\n$list : List all of the swears in the swearlist!\n$shutdown : Turn off the discord bot (Only JT can run this)`")
         return
 
     # I'm gonna make the shutdown command run first due to priority reasons
@@ -204,6 +207,6 @@ def signal_handler(sig,frame):
     sys.exit(0)
 
 client.run(os.getenv('BOT_TOKEN'))
-signal.signal(signal.SIGINT, signal_handler)
+#signal.signal(signal.SIGINT, signal_handler)
 #signal.pause() THIS CODE DOESNT WORK ON WINDOWS!
 
