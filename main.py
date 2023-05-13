@@ -14,6 +14,9 @@ import aiobungie
 # Random number generator
 import random
 
+# Import helper .py
+import functions
+
 # I think someone misclicked and started watching this repository, so like I'm using .env now.
 bclient = aiobungie.Client(os.getenv('BUNGIE_TOKEN'))
 # Date and Time
@@ -38,8 +41,7 @@ joe_words = [
     "Did anyone ask?"
 ]
 
-intents = discord.Intents.default()
-intents.message_content = True
+intents = discord.Intents.all()
 client = discord.Client(intents=intents)
 # Time that the discord client starts????
 startTime = time.time()
@@ -58,7 +60,9 @@ async def on_ready():
     print('We have logged in as {0.user}'.format(client))
     channel = client.get_channel(789609064967307274)
     startTime = time.time()
-    await channel.send("Raspberry PyBot Online!")
+    #await channel.send("Raspberry PyBot Online!")
+    print("Welcome to JT's Discord Bot User Interface")
+            
 
 
 
@@ -83,9 +87,22 @@ async def on_message(message):
             await client.close()
             return # Is this needed?
         else:
-            message.reply('Sorry, but only King JT can run this command! Better luck next time')
+            await message.reply('Sorry, but only King JT can run this command! Better luck next time')
             return
+        
+    # Remove 100 messages from the bot
+    # Mostly just going to test whether or not the bot has permissions with this one
+    if message.content == '$purge' and message.author.id == 173748750068482048:
+        # Lets use the helper function 
+        deleted = await message.channel.purge(limit=100,check=functions.is_me)
+        await message.channel.send(f'Deleted {len(deleted)} message(s)')
+        return 
     
+    # List Members
+    if message.content == '$members':
+        list_members = functions.list_online(message)
+        await message.channel.send(list_members)
+        
     # List the swear list
     if message.content == '$list':
         # Loop time to print
@@ -93,7 +110,8 @@ async def on_message(message):
         for word in bad_words:
             response1+=(word+'\n')
         response1+='`'
-        await message.channel.send(response1)
+        # Yeah I don't want this list of swears cluttering it up
+        await message.channel.send(response1,delete_after=10.0)
         return
             
     # Ideally this will add the given swear to the swear list. Jt should maintain the swear list to make sure it is right
@@ -196,17 +214,28 @@ async def on_shard_disconnect():
     return
 
 # Handler for CTRL+C, thanks stack overflow
-def signal_handler(sig,frame):
-    print("CTRL+C Detected")
-    f.close()
-    rewriteFile = open('swearlist.txt','w')
-    for i in bad_words:
-        rewriteFile.write('\n'+i.lower())
-        print ("Writing: " + i.lower + " to file!")
-    # This code kills program
-    sys.exit(0)
+# Code does not work 
+
+# def signal_handler(sig,frame):
+#     print("CTRL+C Detected")
+#     f.close()
+#     rewriteFile = open('swearlist.txt','w')
+#     for i in bad_words:
+#         rewriteFile.write('\n'+i.lower())
+#         print ("Writing: " + i.lower + " to file!")
+#     # This code kills program
+#     sys.exit(0)
+
+
+# Helper functions below
+
+# This should take the message, then get a list of members and return a string containing the members and their online status'
+
 
 client.run(os.getenv('BOT_TOKEN'))
-#signal.signal(signal.SIGINT, signal_handler)
-#signal.pause() THIS CODE DOESNT WORK ON WINDOWS!
+
+
+# I want to be able to interact with the bot via command line, so I'm going to make a menu
+
+
 
