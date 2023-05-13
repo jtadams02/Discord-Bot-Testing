@@ -9,13 +9,13 @@ import signal
 # Below will handle getting the discord bot's token to log in
 from dotenv import load_dotenv
 load_dotenv()
-# For testing with bungie stuff
+# For testing with bungie stuff before I make my own BungieAPI interace
 import aiobungie
 # Random number generator
 import random
-# Bungie API Key a7a359696ab84fcebf7a31bb9b2ebddf
-# Probably shouldn't leave that public but whatevs
-bclient = aiobungie.Client('a7a359696ab84fcebf7a31bb9b2ebddf')
+
+# I think someone misclicked and started watching this repository, so like I'm using .env now.
+bclient = aiobungie.Client(os.getenv('BUNGIE_TOKEN'))
 # Date and Time
 import datetime,time
 # UserList
