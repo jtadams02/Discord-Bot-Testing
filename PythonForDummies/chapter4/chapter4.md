@@ -1,0 +1,48 @@
+# Chapter 4 Notes
+
+- Numbers
+  - Integers
+    - Any whole number, positive or negative
+    - **NO LIMIT TO ITS SIZE** not like C
+  - Floats
+    - A number that contains a decimal point
+  - Complex Numbers
+    - uses 'j' to identify imaginary numbers
+  - Words (strings)
+    - Escape character: (\)
+      - \n for linebreak
+      - \' for extra quotation mark
+  - Booleans
+    - True or False
+    - Very efficient, only requires 1 bit of storage
+- Operators
+  - Arithmetic Operators
+    - \+ addition duh
+    - \- Subraction duh
+    - \* Multiplication duh
+    - / Division duh
+    - % Modulus (Remainder after the division)
+    - ** Exponent (3**2=9)
+    - // Floor division (11//5 = 2) Basically just how many go into it
+  - Comparison Operators
+    - < Less Than
+    - \> Greater Than
+    - <= Less than or equal too
+    - \>= Greater Than or Equal too
+    - == Equal too
+    - != not equal too
+    - **OBJECT IDENTITIES**
+      - is : Object identity
+      - is not : Negated object identity
+  - Boolean Operators
+    - or : x or y
+    - and : x and y
+    - not : not x
+    - Its recommended to put whitespace around operators
+- Variables
+  - Rules
+    - Must start with a letter or underscore
+    - After the first character you can use letters, numbers or underscores
+    - Names are Case sensitive
+    - Cannout be enclosed in, or contain quotation marks
+## Finished book 1 YAYAYAYYAYAYAYAYAYAYAYAYAYAyY
