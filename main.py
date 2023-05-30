@@ -61,24 +61,49 @@ async def on_ready():
     channel = client.get_channel(789609064967307274)
     startTime = time.time()
     #await channel.send("Raspberry PyBot Online!")
+    # I want the bot to send me a DM when its turned on
+    jt_user = await client.fetch_user(173748750068482048)
+    jt_dm = await client.create_dm(jt_user)
+    
+    await jt_dm.send("Bot Online!")
+    
     print("Welcome to JT's Discord Bot User Interface")
             
 
 
 
-
+# I want the bot to handle all users in the server, so lets make it able to send messages to new users!
+@client.event
+async def on_member_join(member):
+    # How do I figure out which is the right channel for multiple servers?
+    # I could use JSONs later, for now just use ChannelID
+    guild = client.get_guild(789357860886675456)                                                                                                    
+    channel = guild.get_channel(1108530112699310104)                                                                                                 
+    await channel.send(f'**Welcome to the server {member.mention} ! :partying_face:**')                                                             
+    
+    
 @client.event
 async def on_message(message):
     if message.author == client.user:
         return
+    
+    # Troll Tatum
+    #if message.author.id == 743721232326852628:
+    #        await message.reply("bitch",delete_after=2.0)
+
     # This is just the prefix command. I know I'm not doing commands right but I'm learning okay
     if message.content == '$':
         await message.channel.send("`$ is my prefix. If you\'d like to see more commands enter \"$help\"\nI am a bot coded in Python by JT`")
         return
+    
+    # Leaderboard
+    if message.content == '$scoreboard':
+        await functions.leaderboard(message)
+        return
 
     # Simple help command
     if message.content == '$help':
-        await message.channel.send("`There aren't a lot of commands right now, but here's what we got:\n$uptime : See how long the bots been running!\n$time Get the current time!\n$swear : Report a swear word you would like to add to the no-no list\n$delete : Delete a swear word from the swear list\n$list : List all of the swears in the swearlist!\n$shutdown : Turn off the discord bot (Only JT can run this)`")
+        await message.channel.send("`There aren't a lot of commands right now, but here's what we got:\n$members : See whos in this channel and who's online!\n$uptime : See how long the bots been running!\n$time : Get the current time! (Currently Broken)\n$swear : Report a swear word you would like to add to the no-no list\n$delete : Delete a swear word from the swear list\n$list : List all of the swears in the swearlist!\n$shutdown : Turn off the discord bot (Only JT can run this)`")
         return
 
     # I'm gonna make the shutdown command run first due to priority reasons
@@ -92,11 +117,16 @@ async def on_message(message):
         
     # Remove 100 messages from the bot
     # Mostly just going to test whether or not the bot has permissions with this one
-    if message.content == '$purge' and message.author.id == 173748750068482048:
-        # Lets use the helper function 
-        deleted = await message.channel.purge(limit=100,check=functions.is_me)
-        await message.channel.send(f'Deleted {len(deleted)} message(s)')
-        return 
+    if message.content.startswith('$purge') and message.author.id == 173748750068482048:
+        # Cannot use the helper function on this due to client not being passed!
+        if len(message.content.split()) < 2:
+            deleted = await message.channel.purge(limit=100,check=is_me)
+            await message.channel.send(f'Deleted {len(deleted)} message(s)')
+            return 
+        else: 
+            # Assuming there is more
+            return
+        
     
     # List Members
     if message.content == '$members':
@@ -139,11 +169,11 @@ async def on_message(message):
     if message.content.startswith("$delete"):
         msg = message.content 
         if len(msg.split()) < 2:
-            await message.reply("Sorry, but swears are only 1 word long!",delete_after=5.0)
+            await message.reply("Sorry, but swears are only 1 word long!",delete_after=10.0)
             return
         swear = msg.split(' ')[1]
         if swear.isspace():
-            await message.reply("Cannot delete empty string",delete_after=5.0)
+            await message.reply("Cannot delete empty string",delete_after=10.0)
             return
         if swear.lower() in bad_words:
             # Now we remove the swear
@@ -177,16 +207,16 @@ async def on_message(message):
     # delete_after causes the message to delete after 5 seconds!
     if any(word in message.content.lower() for word in bad_words):
             if message.author.id == 743721232326852628:
-                await message.reply(random.choice(in_the_clear),delete_after=5.0)
+                await message.reply(random.choice(in_the_clear),delete_after=10.0)
                 return
             else:
-                await message.reply(random.choice(bad_responses),delete_after=5.0)
+                await message.reply(random.choice(bad_responses),delete_after=10.0)
                 return
     # tman, just respondes to tman lol
     if message.author.id == 1106741623943086090:
         random_number = random.randint(1,2)
         if random_number == 1:
-            await message.reply(random.choice(joe_words),delete_after=5.0)
+            await message.reply(random.choice(joe_words))
         return
 
 # Below 2 functions will run on a disconnect from wifi, not when CTRL+C is pressed
@@ -231,6 +261,9 @@ async def on_shard_disconnect():
 
 # This should take the message, then get a list of members and return a string containing the members and their online status'
 
+# Helper function for puring bot messages
+def is_me(m):
+    return m.author == client.user
 
 client.run(os.getenv('BOT_TOKEN'))
 
