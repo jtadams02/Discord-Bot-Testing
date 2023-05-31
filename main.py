@@ -4,12 +4,16 @@
 import discord
 from discord.ext import commands
 import os
+
 # Signal will allow us to update our swearlist on CTRL+C
 import signal
+
 # Below will handle getting the discord bot's token to log in
+
 from dotenv import load_dotenv
 load_dotenv()
-# For testing with bungie stuff before I make my own BungieAPI interace
+
+# For testing with bungie stuff before I make my own BungieAPI wrapper
 import aiobungie
 # Random number generator
 import random
@@ -32,7 +36,7 @@ for line in f:
 # And here will be the responses to the bad words
 bad_responses = ["Erm, Language!","That's not gonna fly here buddy","Watch it buster!","I'm warning you kiddo","We don't talk like that around here"]
 # And here will be the responses to the people who are excluded
-in_the_clear = ["I didn't see anything","I'll let it slide this time","She gets a pass","I'm misandrist so I'll just ignore this"]
+in_the_clear = ["Looks alright to me","I'll let it slide this time","She gets a pass"]
 # Responses to truppa
 joe_words = [
     "Not funny",
@@ -41,24 +45,16 @@ joe_words = [
     "Did anyone ask?"
 ]
 
-intents = discord.Intents.all()
-client = discord.Client(intents=intents)
+intented = discord.Intents.all()
+client = discord.Client(intents=intented)
+bot = commands.Bot(command_prefix='/',intents=intented)
 # Time that the discord client starts????
 startTime = time.time()
-# I don't know what code below does
-# Bot variable?
-
-bot = commands.Bot(command_prefix='$',intents=intents)
-
-@bot.command()
-async def whois(ctx):
-        await ctx.send("I am a discord bot made in Python by the legendary man JT!")
-
 
 @client.event
 async def on_ready():
     print('We have logged in as {0.user}'.format(client))
-    channel = client.get_channel(789609064967307274)
+    # channel = client.get_channel(789609064967307274)
     startTime = time.time()
     #await channel.send("Raspberry PyBot Online!")
     # I want the bot to send me a DM when its turned on
@@ -69,9 +65,6 @@ async def on_ready():
     
     print("Welcome to JT's Discord Bot User Interface")
             
-
-
-
 # I want the bot to handle all users in the server, so lets make it able to send messages to new users!
 @client.event
 async def on_member_join(member):
@@ -81,19 +74,25 @@ async def on_member_join(member):
     channel = guild.get_channel(1108530112699310104)                                                                                                 
     await channel.send(f'**Welcome to the server {member.mention} ! :partying_face:**')                                                             
     
-    
+
 @client.event
 async def on_message(message):
     if message.author == client.user:
         return
     
-    # Troll Tatum
-    #if message.author.id == 743721232326852628:
-    #        await message.reply("bitch",delete_after=2.0)
+    # So we need this code to run to update the scoreboard. The scoreboard will eventually use a SQL database, but for now it's just going to use the text file
+    
 
     # This is just the prefix command. I know I'm not doing commands right but I'm learning okay
     if message.content == '$':
-        await message.channel.send("`$ is my prefix. If you\'d like to see more commands enter \"$help\"\nI am a bot coded in Python by JT`")
+        embeded = discord.Embed(
+            colour=discord.Colour.blue(),
+            description="$ is my prefix. If you\'d like to see more commands enter \"$help\"\nI am a bot coded in Python by JT`",
+            title="Hi There!"
+        )
+        embeded.set_footer(text="Bleep Bloop - I am a robot!")
+        embeded.set_author(name="JT-Bot",url="https://github.com/jtadams02/JT-Bot")
+        await message.channel.send(embed=embeded)
         return
     
     # Leaderboard
@@ -103,7 +102,15 @@ async def on_message(message):
 
     # Simple help command
     if message.content == '$help':
-        await message.channel.send("`There aren't a lot of commands right now, but here's what we got:\n$members : See whos in this channel and who's online!\n$uptime : See how long the bots been running!\n$time : Get the current time! (Currently Broken)\n$swear : Report a swear word you would like to add to the no-no list\n$delete : Delete a swear word from the swear list\n$list : List all of the swears in the swearlist!\n$shutdown : Turn off the discord bot (Only JT can run this)`")
+        embeded = discord.Embed(
+            colour=discord.Colour.blue(),
+            description="There aren't a lot of commands right now, but here's what we got:\n$members : See whos in this channel and who's online!\n$uptime : See how long the bots been running!\n$swear : Report a swear word you would like to add to the no-no list\n$delete : Delete a swear word from the swear list\n$list : List all of the swears in the swearlist!\n$shutdown : Turn off the discord bot (Only JT can run this)",
+            title="Commands:"
+        )
+        embeded.set_footer(text="Bleep Bloop - I am a robot!")
+        embeded.set_author(name="JT-Bot",url="https://github.com/jtadams02/JT-Bot")
+        #await message.channel.send("`There aren't a lot of commands right now, but here's what we got:\n$members : See whos in this channel and who's online!\n$uptime : See how long the bots been running!\n$swear : Report a swear word you would like to add to the no-no list\n$delete : Delete a swear word from the swear list\n$list : List all of the swears in the swearlist!\n$shutdown : Turn off the discord bot (Only JT can run this)`")
+        await message.channel.send(embed=embeded)
         return
 
     # I'm gonna make the shutdown command run first due to priority reasons
@@ -114,6 +121,7 @@ async def on_message(message):
         else:
             await message.reply('Sorry, but only King JT can run this command! Better luck next time')
             return
+        
         
     # Remove 100 messages from the bot
     # Mostly just going to test whether or not the bot has permissions with this one
@@ -188,20 +196,16 @@ async def on_message(message):
             return
 
             
-
+    # This code is buggy, the time does not work right
     if message.content == '$uptime':
         uptime = str(datetime.timedelta(seconds=int(round(time.time()-startTime))))
         msg = 'JT Bot has been active for: ' + str(uptime)
         await message.channel.send(msg)
         return
 
+    # Just a simple hi
     if message.content.startswith('$hi'):
         await message.channel.send('Hello there! I am a robot!')
-
-    if message.content.startswith('$time'):
-        today = datetime.today()
-        await message.channel.send(today)
-        return
 
     # Below code checks whether or not a word in the message matches a word in bad_words
     # delete_after causes the message to delete after 5 seconds!
@@ -212,12 +216,6 @@ async def on_message(message):
             else:
                 await message.reply(random.choice(bad_responses),delete_after=10.0)
                 return
-    # tman, just respondes to tman lol
-    if message.author.id == 1106741623943086090:
-        random_number = random.randint(1,2)
-        if random_number == 1:
-            await message.reply(random.choice(joe_words))
-        return
 
 # Below 2 functions will run on a disconnect from wifi, not when CTRL+C is pressed
 @client.event
@@ -243,32 +241,10 @@ async def on_shard_disconnect():
         print ("Writing: " + i.lower + " to file!")
     return
 
-# Handler for CTRL+C, thanks stack overflow
-# Code does not work 
-
-# def signal_handler(sig,frame):
-#     print("CTRL+C Detected")
-#     f.close()
-#     rewriteFile = open('swearlist.txt','w')
-#     for i in bad_words:
-#         rewriteFile.write('\n'+i.lower())
-#         print ("Writing: " + i.lower + " to file!")
-#     # This code kills program
-#     sys.exit(0)
-
-
-# Helper functions below
-
-# This should take the message, then get a list of members and return a string containing the members and their online status'
-
 # Helper function for puring bot messages
 def is_me(m):
     return m.author == client.user
 
 client.run(os.getenv('BOT_TOKEN'))
-
-
-# I want to be able to interact with the bot via command line, so I'm going to make a menu
-
 
 

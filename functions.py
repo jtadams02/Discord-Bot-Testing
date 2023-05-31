@@ -12,14 +12,15 @@ def list_online(message):
     output+="*` are:\n"
     # Now we have our list of members:
     for member in member_list:
-        # Create variable to append to output
-        toApp = str(member.nick)
-        toApp += " and they are currently: "
-        toApp += str(member.status)
-        
-        # Now append the var to the output:
-        output+=toApp
-        output+='\n'
+        if member.nick != "None":
+            # Create variable to append to output
+            toApp = str(member.nick)
+            toApp += " and they are currently: "
+            toApp += str(member.status)
+            
+            # Now append the var to the output:
+            output+=toApp
+            output+='\n'
     output+='`'
     return output
     
@@ -44,11 +45,11 @@ async def leaderboard(message):
     for chunnel in text_channels:
         # Going to need to fetch the message history from each channel
         async for message in chunnel.history():
-            messages.append(message)
+            if message.author.id != 184405311681986560 and message.author.id != 296023718839451649:
+                messages.append(message)
     
     # That should have filled everything up
     for contents in messages:
         print(contents.author.name)
         
         
-    
