@@ -102,6 +102,7 @@ async def on_message(message):
 
     # Simple help command
     if message.content == '$help':
+        test = "HELP ME"
         embeded = discord.Embed(
             colour=discord.Colour.blue(),
             description="There aren't a lot of commands right now, but here's what we got:\n$members : See whos in this channel and who's online!\n$uptime : See how long the bots been running!\n$swear : Report a swear word you would like to add to the no-no list\n$delete : Delete a swear word from the swear list\n$list : List all of the swears in the swearlist!\n$shutdown : Turn off the discord bot (Only JT can run this)",
@@ -119,7 +120,7 @@ async def on_message(message):
             await client.close()
             return # Is this needed?
         else:
-            await message.reply('Sorry, but only King JT can run this command! Better luck next time')
+            await message.reply('Sorry, but only Supreme Leader JT can run this command! Better luck next time')
             return
         
         
@@ -151,6 +152,13 @@ async def on_message(message):
         # Yeah I don't want this list of swears cluttering it up
         await message.channel.send(response1,delete_after=10.0)
         return
+
+    # Find the most said word in the channel:
+    if message.content == "$frequency":
+        await functions.frequency(message.channel)
+        return
+            
+        
             
     # Ideally this will add the given swear to the swear list. Jt should maintain the swear list to make sure it is right
     if message.content.startswith("$swear"):
