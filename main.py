@@ -30,10 +30,14 @@ import datetime,time
 
 # We need our list of no-no words, lets get it
 bad_words = []
-f = open('swearlist.txt','r+')
-for line in f:
-    if not line.strip().lower().isspace():
-        bad_words.append(line.strip().lower())
+try: 
+    f = open('swearlist.txt','r+')
+    for line in f:
+        if not line.strip().lower().isspace():
+            bad_words.append(line.strip().lower())
+except:
+    print("SwearList failed")
+
 # And here will be the responses to the bad words
 bad_responses = ["Erm, Language!","That's not gonna fly here buddy","Watch it buster!","I'm warning you kiddo","We don't talk like that around here"]
 # And here will be the responses to the people who are excluded
@@ -96,10 +100,27 @@ async def on_message(message):
         await message.channel.send(embed=embeded)
         return
     
-    # Leaderboard
+    # Leaderboard, broken af
     if message.content == '$scoreboard':
         await functions.leaderboard(message)
         return
+
+    # This function is for testing the usage of the clash royale api
+    if message.content.lower().startswith('$clash'):
+        m = message.content.split(' ')
+        if len(m) == 2:
+            if m[1].startswith("#"):
+                m[1] = m[1][1:]
+            # Now we need to call the the clash function
+            data = clashAPI.discord_testing(m[1])
+            if data == 0:
+                await message.channel.send(f"The tag you provided caused an error\nYour input: {m[1]}")
+                return
+            await message.channel.send(f"The name of the tag you provided is `{data}`")
+            return
+        else:
+            await message.channel.send("Oops! There was an issue with your command syntax\nTry again!")
+            return
 
     # Simple help command
     if message.content == '$help':
@@ -134,7 +155,6 @@ async def on_message(message):
             await message.channel.send(f'Deleted {len(deleted)} message(s)')
             return 
         else: 
-            # Assuming there is more
             return
         
     
@@ -253,6 +273,8 @@ async def on_shard_disconnect():
 # Helper function for puring bot messages
 def is_me(m):
     return m.author == client.user
+def is_jt(m):
+    return m.author.id == 173748750068482048
 
 client.run(os.getenv('BOT_TOKEN'))
 
