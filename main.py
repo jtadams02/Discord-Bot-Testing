@@ -19,7 +19,7 @@ import aiobungie
 import random
 
 # Import helper .py
-import functions
+import files.functions as functions
 
 # I think someone misclicked and started watching this repository, so like I'm using .env now.
 bclient = aiobungie.Client(os.getenv('BUNGIE_TOKEN'))
