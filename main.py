@@ -92,7 +92,7 @@ async def on_message(message):
     if message.content == '$':
         embeded = discord.Embed(
             colour=discord.Colour.blue(),
-            description="$ is my prefix. If you\'d like to see more commands enter \"$help\"\nI am a bot coded in Python by JT`",
+            description="$ is my prefix. If you\'d like to see more commands enter \"$help\"\n`I am a bot coded in Python by JT`",
             title="Hi There!"
         )
         embeded.set_footer(text="Bleep Bloop - I am a robot!")
@@ -116,10 +116,10 @@ async def on_message(message):
             if data == 0:
                 await message.channel.send(f"The tag you provided caused an error\nYour input: {m[1]}")
                 return
-            await message.channel.send(f"The name of the tag you provided is `{data}`")
+            await message.channel.send(embed=data)
             return
-        else:
-            await message.channel.send("Oops! There was an issue with your command syntax\nTry again!")
+        elif len(m) == 1 :
+            await message.channel.send(embed=clashAPI.commands_response())
             return
 
     # Simple help command
